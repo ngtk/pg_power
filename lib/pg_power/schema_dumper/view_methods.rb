@@ -25,7 +25,7 @@ module PgPower::SchemaDumper::ViewMethods
   def write_view_definition(stream, table_schema, table_name, view_definition)
     stream << "  create_view \"#{table_schema}.#{table_name}\", <<-SQL\n" \
               "    #{view_definition}\n" \
-              "  SQL"
+              "  SQL\n"
   end
   private :write_view_definition
 

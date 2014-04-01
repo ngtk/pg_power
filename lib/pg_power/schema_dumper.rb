@@ -9,12 +9,14 @@ module PgPower::SchemaDumper
   autoload :CommentMethods
   autoload :SchemaMethods
   autoload :ForeignerMethods
+  autoload :FunctionMethods
   autoload :ViewMethods
 
   include ExtensionMethods
   include CommentMethods
   include SchemaMethods
   include ForeignerMethods
+  include FunctionMethods
   include ViewMethods
 
   included do
@@ -22,6 +24,7 @@ module PgPower::SchemaDumper
     alias_method_chain :header, :extensions
 
     alias_method_chain :tables, :schemas
+    alias_method_chain :tables, :functions
     alias_method_chain :tables, :views
     alias_method_chain :tables, :comments
     alias_method_chain :tables, :foreign_keys

@@ -14,7 +14,7 @@ module PgPower
 
     # Creates PostgreSQL schema
     def create_schema(schema_name)
-      sql = %{CREATE SCHEMA "#{schema_name}"}
+      sql = %{CREATE SCHEMA  "#{schema_name}"}
       connection.execute sql
     end
 
@@ -63,6 +63,39 @@ module PgPower
       SQL
       connection.execute sql
     end
+
+
+
+    def functions
+     sql = <<-SQL
+         SELECT  proname, prosrc, nspname, pg_get_function_arguments(p.oid), pg_get_function_result(p.oid)
+         FROM    pg_catalog.pg_namespace n
+         JOIN    pg_catalog.pg_proc p
+         ON      pronamespace = n.oid
+         WHERE nspname NOT IN ('pg_catalog','information_schema', 'sys')
+      SQL
+      connection.execute sql
+    end
+
+
+    def drop_function(function_name)
+       sql = "DROP FUNCTION #{function_name};"
+      connection.execute sql
+    end
+
+    def create_function(function_name, function_arguments, function_result, function_definition)
+
+      sql = <<-SQL
+        CREATE  OR REPLACE  FUNCTION #{function_name}(#{function_arguments}) RETURNS #{function_result} AS
+        $BODY$
+         #{function_definition}
+        $BODY$
+        LANGUAGE 'plpgsql' VOLATILE SECURITY DEFINER
+      SQL
+      connection.execute sql
+    end
+
+
 
     # Return database connections
     def connection

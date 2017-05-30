@@ -29,7 +29,9 @@ module ActiveRecord # :nodoc:
       # the custom {PgPower::ConnectionAdapters::IndexDefinition}
       #
       def indexes(table_name, name = nil)
-        schema, table = Utils.extract_schema_and_table(table_name)
+        name = ::ActiveRecord::ConnectionAdapters::PostgreSQL::Utils.extract_schema_qualified_name(table_name)
+        schema = name.schema
+        table = name.identifier
         schemas = schema ? "ARRAY['#{schema}']" : 'current_schemas(false)'
 
         result = query(<<-SQL, name)
